@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Certs to JKS conversion script modified from https://xacmlinfo.org/2014/06/13/how-to-keystore-creating-jks-file-from-existing-private-key-and-certificate/
+mkdir -p $(pwd)/jks
+openssl pkcs12 -export -in $(pwd)/certs/node.crt -inkey $(pwd)/certs/node.key -certfile $(pwd)/certs/ca.crt -out $(pwd)/jks/testkeystore.p12
+keytool -importkeystore -srckeystore $(pwd)/jks/testkeystore.p12 -srcstoretype pkcs12 -destkeystore $(pwd)/jks/redpanda.jks -deststoretype JKS
+
