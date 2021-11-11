@@ -191,6 +191,8 @@ public class WordCountInteractiveQueriesExample {
     // Start the Restful proxy for servicing remote access to state stores
     final WordCountInteractiveQueriesRestService restService = startRestProxy(streams, DEFAULT_HOST, port);
 
+    System.out.println("Example started.");
+
     // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       try {
