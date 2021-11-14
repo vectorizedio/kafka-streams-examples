@@ -77,6 +77,8 @@ public class WordCountInteractiveQueriesDriver {
     producer.send(new ProducerRecord<>(WordCountInteractiveQueriesExample.TEXT_LINES_TOPIC,
                                        inputValues.get(0), inputValues.get(0)));
 
+    System.out.println("Driver started.");
+
     // every 500 milliseconds produce one of the lines of text from inputValues to the
     // TextLinesTopic
     final Random random = new Random();
