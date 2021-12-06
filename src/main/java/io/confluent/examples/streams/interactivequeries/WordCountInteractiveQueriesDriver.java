@@ -45,6 +45,7 @@ public class WordCountInteractiveQueriesDriver {
 
   public static void main(final String [] args) throws Exception {
     final String bootstrapServers = args.length > 0 ? args[0] : "localhost:9092";
+    final int nSendsForEachValue = args.length > 1 ? Integer.parseInt(args[1]) : 1;
     final List<String> inputValues = Arrays.asList("hello world",
                                                    "all streams lead to kafka",
                                                    "streams",
@@ -70,24 +71,16 @@ public class WordCountInteractiveQueriesDriver {
         producer =
         new KafkaProducer<>(producerConfig, new StringSerializer(), new StringSerializer());
 
-    // Always begin with writing the first line to the topic so that the REST API example calls in
-    // our step-by-step instructions always work right from the start (otherwise users may run into
-    // HTTP 404 errors when querying the latest value for a key, for example, until the right input
-    // data was sent to the topic).
-    producer.send(new ProducerRecord<>(WordCountInteractiveQueriesExample.TEXT_LINES_TOPIC,
-                                       inputValues.get(0), inputValues.get(0)));
-
-    System.out.println("Driver started.");
-
-    // every 500 milliseconds produce one of the lines of text from inputValues to the
-    // TextLinesTopic
-    final Random random = new Random();
-    while (true) {
-      final int i = random.nextInt(inputValues.size());
-      producer.send(new ProducerRecord<>(WordCountInteractiveQueriesExample.TEXT_LINES_TOPIC,
-                                         inputValues.get(i), inputValues.get(i)));
+    // Send each value N times
+    for (int i=0; i<nSendsForEachValue; i++) {
+      for (final String value : inputValues) {
+        producer.send(new ProducerRecord<>(WordCountInteractiveQueriesExample.TEXT_LINES_TOPIC,
+                                           value, value));
+      }
       Thread.sleep(500L);
     }
+
+    System.out.println("Driver completed.");
   }
 
 }
