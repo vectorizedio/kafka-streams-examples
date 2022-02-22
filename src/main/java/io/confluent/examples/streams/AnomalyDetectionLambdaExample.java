@@ -130,7 +130,10 @@ public class AnomalyDetectionLambdaExample {
 
     final KTable<Windowed<String>, Long> anomalousUsers = views
       // map the user name as key, because the subsequent counting is performed based on the key
-      .map((ignoredKey, username) -> new KeyValue<>(username, username))
+      .map((ignoredKey, username) -> {
+        System.out.println("clicks-> " + username);
+        return new KeyValue<>(username, username);
+      })
       // count users, using one-minute tumbling windows;
       // no need to specify explicit serdes because the resulting key and value types match our default serde settings
       .groupByKey()
@@ -151,7 +154,16 @@ public class AnomalyDetectionLambdaExample {
       // because LongDeserializer fails on null values, and even though we could configure
       // kafka-console-consumer to skip messages on error the output still wouldn't look pretty)
       .filter((windowedUserId, count) -> count != null)
-      .map((windowedUserId, count) -> new KeyValue<>(windowedUserId.toString(), count));
+      .map((windowedUserId, count) -> {
+        System.out.println("anomalous-> " + windowedUserId.toString() + ":" + count);
+        return new KeyValue<>(windowedUserId.toString(), count);
+      });
+      // .map(new KeyValueMapper<Windowed<String>, Long, KeyValue<String, Long>> () {
+      //   KeyValue<String, Long> apply(Windowed<String> key, Long value) {
+      //     System.out.println(key.toString() + " : " + value.toString());
+      //     return new KeyValue<>(key.toString(), value);
+      //   }
+      // });
 
     // write to the result topic
     anomalousUsersForConsole.to("AnomalousUsers", Produced.with(stringSerde, longSerde));
