@@ -86,13 +86,16 @@ public class PageViewRegionExampleDriver {
     try (final KafkaProducer<String, GenericRecord> producer = new KafkaProducer<>(props)) {
       for (final String user : users) {
         userProfileBuilder.set("experience", "some");
-        userProfileBuilder.set("region", regions[random.nextInt(regions.length)]);
+        final String some_region = regions[random.nextInt(regions.length)];
+        userProfileBuilder.set("region", some_region);
+        System.out.println("Send USER: " + user + " REGION: " + some_region);
         producer.send(new ProducerRecord<>(userProfilesTopic, user, userProfileBuilder.build()));
         // For each user generate some page views
         for (int i=0; i<random.nextInt(10); i++) {
           pageViewBuilder.set("user", user);
           pageViewBuilder.set("page", "index.html");
           final GenericData.Record record = pageViewBuilder.build();
+          System.out.println("Send CLICK: " + user + " PAGE: index.html");
           producer.send(new ProducerRecord<>(pageViewsTopic, null, record));
         }
       }
