@@ -145,14 +145,15 @@ import java.util.Properties;
 public class WordCountInteractiveQueriesExample {
 
   static final String TEXT_LINES_TOPIC = "TextLinesTopic";
-  static final String DEFAULT_HOST = "localhost";
+  static String DEFAULT_HOST = "localhost";
 
   public static void main(final String[] args) throws Exception {
-    if (args.length == 0 || args.length > 2) {
+    if (args.length == 0) {
       throw new IllegalArgumentException("usage: ... <portForRestEndPoint> [<bootstrap.servers> (optional)]");
     }
     final int port = Integer.parseInt(args[0]);
     final String bootstrapServers = args.length > 1 ? args[1] : "localhost:9092";
+    DEFAULT_HOST = args.length > 2 ? args[2] : "localhost";
 
     final Properties streamsConfiguration = new Properties();
     // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
@@ -190,6 +191,8 @@ public class WordCountInteractiveQueriesExample {
 
     // Start the Restful proxy for servicing remote access to state stores
     final WordCountInteractiveQueriesRestService restService = startRestProxy(streams, DEFAULT_HOST, port);
+
+    System.out.println("Example started.");
 
     // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {

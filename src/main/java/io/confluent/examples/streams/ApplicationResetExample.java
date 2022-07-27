@@ -180,6 +180,8 @@ public class ApplicationResetExample {
 
     streams.start();
 
+    System.out.println("Example started.");
+
     try {
       latch.await();
     } catch (final InterruptedException e) {

@@ -145,6 +145,8 @@ public class SecureKafkaStreamsExample {
 
   public static void main(final String[] args) {
     final String secureBootstrapServers = args.length > 0 ? args[0] : "localhost:9093";
+    final String truststoreFilePath = args.length > 1 ? args[1] : "/etc/security/tls/kafka.client.truststore.jks";
+    final String keystoreFilePath = args.length > 2 ? args[2] : "/etc/security/tls/kafka.client.keystore.jks";
     final Properties streamsConfiguration = new Properties();
     // Give the Streams application a unique name.  The name must be unique in the Kafka cluster
     // against which the application is run.
@@ -164,9 +166,9 @@ public class SecureKafkaStreamsExample {
     //    were generated and stored in the VM in which the secure Kafka broker is running.  This
     //    also explains why you must run this example application from within the VM.
     streamsConfiguration.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-    streamsConfiguration.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, "/etc/security/tls/kafka.client.truststore.jks");
+    streamsConfiguration.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreFilePath);
     streamsConfiguration.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, "test1234");
-    streamsConfiguration.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, "/etc/security/tls/kafka.client.keystore.jks");
+    streamsConfiguration.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystoreFilePath);
     streamsConfiguration.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, "test1234");
     streamsConfiguration.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG, "test1234");
 
@@ -186,6 +188,8 @@ public class SecureKafkaStreamsExample {
     // See `ApplicationResetExample.java` for a production-like example.
     streams.cleanUp();
     streams.start();
+
+    System.out.println("Example started.");
 
     // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
     Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

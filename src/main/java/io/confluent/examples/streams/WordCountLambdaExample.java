@@ -143,6 +143,8 @@ public class WordCountLambdaExample {
     // Now run the processing topology via `start()` to begin processing its input data.
     streams.start();
 
+    System.out.println("Example started.");
+
     // Add shutdown hook to respond to SIGTERM and gracefully close the Streams application.
     Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
   }

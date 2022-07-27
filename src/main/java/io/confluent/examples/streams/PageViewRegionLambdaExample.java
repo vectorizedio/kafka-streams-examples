@@ -175,6 +175,7 @@ public class PageViewRegionLambdaExample {
         viewRegion.put("user", view.get("user"));
         viewRegion.put("page", view.get("page"));
         viewRegion.put("region", region);
+        System.out.println("Duck--> U: " + view.get("user").toString() + ", P: " + view.get("page") + ", R: " + region);
         return viewRegion;
       })
       .map((user, viewRegion) -> new KeyValue<>(viewRegion.get("region").toString(), viewRegion))
@@ -208,6 +209,8 @@ public class PageViewRegionLambdaExample {
     // See `ApplicationResetExample.java` for a production-like example.
     streams.cleanUp();
     streams.start();
+
+    System.out.println("Example started.");
 
     // Add shutdown hook to respond to SIGTERM and gracefully close Kafka Streams
     Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
