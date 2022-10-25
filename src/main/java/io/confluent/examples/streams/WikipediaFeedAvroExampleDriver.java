@@ -75,7 +75,7 @@ public class WikipediaFeedAvroExampleDriver {
 
     final Random random = new Random();
 
-    IntStream.range(0, random.nextInt(100))
+    IntStream.range(1, random.nextInt(100)+2)
             .mapToObj(value -> new WikiFeed(users[random.nextInt(users.length)], true, "content"))
             .forEach(
                     record -> producer.send(new ProducerRecord<>(WikipediaFeedAvroExample.WIKIPEDIA_FEED, null, record)));
